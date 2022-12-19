@@ -1,14 +1,21 @@
 import { useContext } from "react";
 import { FormMoverContext } from "./contexts/FormMoverContext";
 import { Context } from "contexts/Context";
+import { format, add, parseISO } from 'date-fns';
+import { useEffect } from "react";
 
 export default function FormCreateEvent() {
   const { userData, setUserData } = useContext(FormMoverContext);
+  // const { startDate, setStartDate } = useState("")
   const [context] = useContext(Context)
   const handleChange = e => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value, discordName: context.user?.displayName });
   };
+  
+  useEffect(()=>{
+    console.log(parseISO(userData["initialDate"]+"T00:00:00"))
+  },[userData])
 
   return (
     <div className="flex flex-col">
@@ -50,13 +57,16 @@ export default function FormCreateEvent() {
         </div>
         <div className="bg-white my-2 p-1 flex border border-gray-200 rounded">
           <input
-            type="date"
             onChange={handleChange}
             value={userData["initialDate"] || ""}
             name="initialDate"
             placeholder="Start Date"
             className="p-1 px-2 appearance-none outline-non w-full text-gray-800"
-          />
+            type="date"
+            required 
+            min={format(new Date(), 'yyyy-MM-dd')}
+            max='2023-12-31'
+          />  
         </div>
       </div>
 
@@ -65,6 +75,7 @@ export default function FormCreateEvent() {
           End Date
         </div>
         <div className="bg-white my-2 p-1 flex border border-gray-200 rounded">
+          {userData["initialDate"] &&
           <input
             type="date"
             onChange={handleChange}
@@ -72,7 +83,10 @@ export default function FormCreateEvent() {
             name="finalDate"
             placeholder="endDate"
             className="p-1 px-2 appearance-none outline-non w-full text-gray-800"
-          />
+            required 
+            min={format(new Date(), 'yyyy-MM-dd')}
+            max = {format(add(parseISO(userData["initialDate"] + "T00:00:00"), {days: 90}), 'yyyy-MM-dd')}
+          />}
         </div>
       </div>
       <div className="w-full mx-2 flex-1">
