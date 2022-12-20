@@ -6,16 +6,11 @@ import { useEffect } from "react";
 
 export default function FormCreateEvent() {
   const { userData, setUserData } = useContext(FormMoverContext);
-  // const { startDate, setStartDate } = useState("")
   const [context] = useContext(Context)
   const handleChange = e => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value, discordName: context.user?.displayName });
   };
-  
-  useEffect(()=>{
-    console.log(parseISO(userData["initialDate"]+"T00:00:00"))
-  },[userData])
 
   return (
     <div className="flex flex-col">
